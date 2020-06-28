@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <script src="http://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="./board.js"></script>
+    <title>Document</title>
+</head>
+
+<body class="bg-secondary containment">
+    <div class="container">
+        <!-- parte TOP de cartas jugadas EMPIEZA AQUI-->
+        <div id="top-container">
+
+            <div id="player1" class="players-table border border-light">
+
+                <div class="text">
+                    <small class="text">PLAYER 1</small>
+                </div>
+            </div>
+
+
+
+            <div id="player2" class="players-table border border-light">
+                <div class="text">
+                    <small class="text">PLAYER 2</small>
+                </div>
+            </div>
+
+
+            <div id="player3" class="players-table border border-light">
+                <div class="text">
+                    <small class="text">PLAYER 3</small>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- parte TOP de cartas jugadas TERMINA AQUI-->
+
+        <!-- parte media de cartas jugadas EMPIEZA AQUI-->
+        <div id="middle-container">
+            <!-- col izquierda-->
+            <div id="player4" class="players-table border border-light">
+
+                <div class="text">
+                    <small class="text">PLAYER 4</small>
+                </div>
+            </div>
+
+
+
+            <div id="player5" class="players-table border border-light">
+                <div class="text">
+                    <small class="text">PLAYER 5</small>
+                </div>
+            </div>
+
+
+            <div id="player6" class="players-table border border-light">
+                <div class="text">
+                    <small class="text">PLAYER 6</small>
+                </div>
+            </div>
+
+        </div>
+        <!-- parte media de cartas jugadas TERMINA AQUI-->
+
+        <!-- Cartas footer comienza aqui -->
+        <div id="footer-wrapper">
+            <div id="vacio">
+                <div id="discards">
+                    <div class="text">
+                        <small class="text">DISCARDS</small>
+                    </div>
+                </div>
+                <button id="discard-button" type="button" class="btn btn-primary">Re-shuffle discards</button>
+            </div>
+            <div id="player-self" class="border border-light">
+                <div class="text">
+                    <small class="text">PLAYER SELF</small>
+                </div>
+            </div>
+            <div id="deck" class="col">
+                <div class="card w-25 h-100">
+                </div>
+                <button id="button" type="button" class="btn btn-primary">Nueva Carta</button>
+            </div>
+        </div>
+        <div id="store-cards"></div>
+    </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

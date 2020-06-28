@@ -1,0 +1,140 @@
+html, body{
+  height: 100%;
+  width: 100%;
+  font-size: medium;
+  color: ghostwhite;
+}
+.container { 
+  height: 100%;
+}
+#top-container {
+  width: 100%;
+  height: 33.3vh;
+}
+
+#player1, #player2, #player3, #player4, #player5, #player6, #player-self, #deck, #vacio{
+  margin: auto;
+  float: left;
+  width: 31.2%;
+  height: 70%;
+
+}
+#player1, #player2, #player4, #player5, #player-self, #vacio{
+  margin-right: 35px;
+}
+
+
+.text{
+  margin-top: auto;
+}
+
+#middle-container {
+  height: 33.3vh;
+}
+#footer-wrapper {
+    height: 33.3vh;
+   
+}
+.border{
+  border-radius: 10px;
+  width: fit-content;
+  text-align: center;
+  margin: 3px;
+  border:solid 3px;
+  padding: 3px;
+
+}
+
+#discards{
+  border-radius: 10px;
+  text-align: center;
+  border:solid 3px coral;
+  padding: 3px;
+  color: orange;
+  width: 50%;
+  height: 110%;
+
+}
+
+.hidden{
+  margin: 1%;
+  float: left;
+  width: 80px;
+  height: 120px;
+  display: flex;
+  flex-direction: column; 
+}
+
+.played{
+  width: 80px;
+  height: 120px;
+}
+
+
+.card-img{
+  max-width:100%;
+  max-height:100%;
+  display: flex;
+}
+
+@media screen and (max-width: 1200px) {
+  #player1, #player2, #player4, #player5, #player-self, #vacio {
+    margin-right: 10px; /* The width is 100%, when the viewport is 800px or smaller */
+  }
+}
+
+@media screen and (max-width: 800px) {
+  html, body{
+    font-size: smaller;
+  }
+}
+/*
+.deck{
+  width: 20vh;
+  height: 23vh;
+  background: white;
+  padding: 10px;
+  border-radius:10px;
+}
+
+
+.col, .card {
+  height: 30vh !important;
+  width: 10vh !important;
+  margin: auto;
+}
+#player1{
+  margin-right: 100px;
+}
+#player2{
+  margin-left: 40px;
+  margin-right: 40px;
+}
+#player3{
+  margin-left: 100px;
+}
+#player4{
+  margin-right: 350px;
+}
+#player5{
+  margin-left: 350px;
+}
+
+
+
+#footer-wrapper {
+    height: 30%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+  } 
+.card {
+    grid-column: 1 / 6;
+    grid-row: 1;
+}
+
+.card{
+    text-align: center !important;
+    display: block;
+   }*/
