@@ -1,7 +1,7 @@
 $(function(){
     $("#connect").on("click",function(){
         $.ajax({
-            url: "http://localhost:8080/login",
+            url: "https://blurryface123.azurewebsites.net/login",
             type: "POST",
             data: JSON.stringify({
                 "username": $("#username").val(),
