@@ -77,6 +77,10 @@ html, body{
   display: flex;
 }
 
+.store-cards{
+  position: relative;
+}
+
 @media screen and (max-width: 1200px) {
   #player1, #player2, #player4, #player5, #player-self, #vacio {
     margin-right: 10px; /* The width is 100%, when the viewport is 800px or smaller */
