@@ -3,8 +3,7 @@ var arrayCardsID = [];
 var deckIsFinished = false;
 //window.response = false;
 function connect() {
-  //var socket = new SockJS('https://blurryface123.azurewebsites.net/virus-game'); //AQUI SE CONECTA CON EL BACK
-  var socket = new SockJS('https://localhost:8080/virus-game');
+  var socket = new SockJS('https://blurryface123.azurewebsites.net/virus-game'); //AQUI SE CONECTA CON EL BACK
   stompClient = Stomp.over(socket);
 
 
