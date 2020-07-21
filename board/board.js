@@ -17,9 +17,6 @@ function connect() {
       var id = JSON.parse(positionsValues.body).id;
       var y = JSON.parse(positionsValues.body).y;
       var x = JSON.parse(positionsValues.body).x;
-      console.log("TOP: " + y);
-      console.log("LEFT: " + x);
-      console.log("subscribe id: " + id);
       $("#" + id).css({
         top: y+ "%",
         left: x+ "%"
@@ -41,11 +38,7 @@ function connect() {
       var cardDiv = JSON.parse(card.body).cardValue;
       var playerContainer = JSON.parse(card.body).parentId;
       var coord = JSON.parse(card.body).coords;
-      //var x = JSON.parse(card.body).coords.x;
-      console.log(cardId);
-      console.log(cardDiv);
-      console.log(playerContainer);
-      console.log(coord);
+
       moveCard(cardId, cardDiv, playerContainer, coord)
     });
   })
@@ -53,40 +46,15 @@ function connect() {
 
 function moveCard(cardId, cardDiv, playerContainer, coord) {
   if ($($("#" + playerContainer).find("#" + cardId)).length == 0) { //could be faster using children instead of find
-    //var cardType = getType(cardId);
-    //playCardByType(cardType,cardDiv,playerContainer,coord);
     deleteCardByIdAndClass(cardId, "new-card");
     
     $(cardDiv).appendTo("#" + playerContainer).css({
       top: (parseFloat(coord.y/ parseFloat($(window).height())) * 100+ "%"),
       left: (parseFloat(coord.x/ parseFloat($(window).width())) * 100+ "%")
     });
-    console.log(coord.x/$("#" + playerContainer).width());
-    console.log(($("#" + cardId).height() / $("#" + playerContainer).height()) * 100);
-    console.log($($("#" + playerContainer).find("#" + cardId)).length);
   } else {
     console.log("ESTA CARTA YA EXISTE")
   }
-
-  /* $children = $("#"+playerContainer).find(".new-card");
-   if(cardType == "o"){
-     $(cardDiv).appendTo("#" + playerContainer);
-     
-   }else if(cardType == "c" || cardType == "t"){
-     $(cardDiv).appendTo("#" + playerContainer);
-   }else{
-       if($children != null){
-         console.log($children);
-         $($children).each((index, elem) => {
-           console.log(elem.id.charAt(2));
-         });
-       }
-     
-     $(cardDiv).css({
-       top: coord.y + "px",
-       left: coord.x + "px"
-     }).appendTo("#" + playerContainer);
-   } */
 }
 
 function checkSubstring(cardId, substring) {
@@ -189,49 +157,7 @@ function deleteCardByIdAndClass(id, cardClass) {
   }
 }
 
-function coordsOfPlayedCard(ui, index) {
-  //var coords = null;
-  var newCardLeft = ui.position.left + 602.617;
-  var newCardTop = ui.position.top + 512.1167;
-  //this is done when the container origin is in a different position than the new container
-  /*if (index == 0) {
-    coords = {
-      x: newCardLeft,
-      y: newCardTop
-    }
-
-  } else if (index == 1) {
-    coords = {
-      x: newCardLeft + 86.7666,
-      y: newCardTop
-    }
-  } else {
-    coords = {
-      x: newCardLeft + 173.533,
-      y: newCardTop
-    }
-  }*/
-  var coords = {
-    x: newCardLeft,
-    y: newCardTop
-  }
-  return coords;
-}
-
-function getType(cardId) {
-  return cardId.charAt(0)
-}
-
-function sendCardValue(isOrganFlag, id, $playedCard, event, cardCords) {
-  //if(isOrganFlag == true){
-  /*stompClient.send("/app/playCard", {}, JSON.stringify(
-    {
-      'id': id,
-      'cardValue': $playedCard[0].outerHTML,
-      'parentId': event.target.id
-    }
-  ));
-}else{*/
+function sendCardValue(id, $playedCard, event, cardCords) {
   stompClient.send("/app/playCard", {}, JSON.stringify(
     {
       'id': id,
@@ -243,7 +169,6 @@ function sendCardValue(isOrganFlag, id, $playedCard, event, cardCords) {
       }
     }
   ));
-  //} */
 }
 
 function startGame(){
@@ -276,9 +201,7 @@ $(function () {
     drop: function (event, ui) {
       var id = ui.draggable.attr("id");
       var imgSource = ui.draggable[0].innerHTML;
-      var index = $("div .new-card").index($("#" + id));
-      var typeOfCard = getType(id);
-      var $offset = $("#" + id).position();
+      var $cardCords = $("#" + id).position();
       console.log($("#" + id).position());
       console.log(id);
       console.log(event.target.id);
@@ -286,12 +209,8 @@ $(function () {
       var $playedCard = createCardDiv(id, "new-card card own-hand played", $(imgSource).attr("src")).css({
         position: "absolute"
       });
-      console.log($("div .new-card").index($("#" + id)));
-      //var cardCords = coordsOfPlayedCard(ui, index);
-
-      
-      //$($playedCard[0].outerHTML).appendTo("#" + event.target.id);
-      sendCardValue(typeOfCard, id, $playedCard, event, $offset);
+  
+      sendCardValue(id, $playedCard, event, $cardCords);
 
     }
   });
