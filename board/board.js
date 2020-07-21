@@ -1,30 +1,25 @@
-var userID = Math.floor(Math.random() * 10);
-var arrayCardsID = []; 
+var userID = Math.floor(Math.random() * 10000);
+var arrayCardsID = [];
 var deckIsFinished = false;
 //window.response = false;
 function connect() {
   var socket = new SockJS('https://blurryface123.azurewebsites.net/virus-game'); //AQUI SE CONECTA CON EL BACK
+  //var socket = new SockJS('http://localhost:8080/virus-game');
   stompClient = Stomp.over(socket);
 
 
   //MIENTRAS ESTEMOS CONECTADOS
   stompClient.connect({}, function (frame) {
+    startGame()
     drawCard();
-    stompClient.subscribe('/topic/refill-deck', function (card) {
 
-
-    });
-
-    stompClient.subscribe('/topic/conexion', function (positionsValues) {
+    stompClient.subscribe('/topic/drag', function (positionsValues) {
       var id = JSON.parse(positionsValues.body).id;
       var y = JSON.parse(positionsValues.body).y;
       var x = JSON.parse(positionsValues.body).x;
-      console.log("TOP: " + y);
-      console.log("LEFT: " + x);
-      console.log("subscribe id: " + id);
       $("#" + id).css({
-        top: y + "px",
-        left: x + "px"
+        top: y+ "%",
+        left: x+ "%"
       });
     });
 
@@ -35,28 +30,37 @@ function connect() {
 
       $($cardDiv).appendTo($("#player-self"));
       $(".hidden").draggable();
-      console.log(cardId.indexOf("67"));
-      if (cardId.indexOf("67") != -1) {
-        deckIsFinished = true;
-        console.log(deckIsFinished);
-      }
+      deckIsFinished = checkSubstring(cardId, "67");
     });
 
     stompClient.subscribe('/topic/sendPlayedCard', function (card) {
       var cardId = JSON.parse(card.body).id;
       var cardDiv = JSON.parse(card.body).cardValue;
-      var y = JSON.parse(card.body).coords.y;
-      var x = JSON.parse(card.body).coords.x;
-      if ($("#" + cardId).length == 0) {
-        $(cardDiv).css({
-          top: y + "px",
-          left: x + "px"
-        }).appendTo("#store-cards");
-      } else {
-        console.log("ESTA CARTA YA EXISTE PARA TI")
-      }
+      var playerContainer = JSON.parse(card.body).parentId;
+      var coord = JSON.parse(card.body).coords;
+
+      moveCard(cardId, cardDiv, playerContainer, coord)
     });
   })
+}
+
+function moveCard(cardId, cardDiv, playerContainer, coord) {
+  if ($($("#" + playerContainer).find("#" + cardId)).length == 0) { //could be faster using children instead of find
+    deleteCardByIdAndClass(cardId, "new-card");
+    
+    $(cardDiv).appendTo("#" + playerContainer).css({
+      top: (parseFloat(coord.y/ parseFloat($(window).height())) * 100+ "%"),
+      left: (parseFloat(coord.x/ parseFloat($(window).width())) * 100+ "%")
+    });
+  } else {
+    console.log("ESTA CARTA YA EXISTE")
+  }
+}
+
+function checkSubstring(cardId, substring) {
+  if (cardId.indexOf(substring) != -1) {
+    return true
+  } else { return false }
 }
 
 function createCardDiv(cardId, cardClass, cardRef) {
@@ -75,11 +79,11 @@ function createCardDiv(cardId, cardClass, cardRef) {
   return $cartaConImg;
 }
 
-function setCookie(cvalue) {
+function setCookie(key, value) {
   var d = new Date();
   d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000));
   var expires = "expires=" + d.toUTCString();
-  document.cookie = "user" + " = " + cvalue + ";"
+  document.cookie = key + " = " + value + ";"
     + expires + ";" + "SameSite=Strict;"; //samesite para evitar cross site attacks
 }
 
@@ -104,13 +108,13 @@ function drawCard() {
   //no sera por click, ser al droppear
   button.on("click", function (e) {
     //var id = "card-" + ($(".new-card").length + 1);
-    if ( deckIsFinished == true){
+    if (deckIsFinished == true) {
       console.log("deck is finished");
       stompClient.send("/app/discard", {}, JSON.stringify(
         {
           "id": arrayCardsID.join()
         }))
-        console.log("deck is finished a terminado");
+      console.log("deck is finished a terminado");
     }
     if (countCardsOnHands() < 3) {
       console.log(countCardsOnHands());
@@ -135,11 +139,11 @@ function dragCard() {
     console.log("id PARA VER: " + this.id);
     $('.played').draggable({
       drag: function (e, ui) {
-        stompClient.send("/app/prueba", {}, JSON.stringify(
+        stompClient.send("/app/dragCoord", {}, JSON.stringify(
           {
             'id': this.id,
-            'y': ui.position.top,
-            'x': ui.position.left
+            'y': ( 100 * parseFloat(ui.position.top/ parseFloat($(this).parent().height())) ),
+            'x': ( 100 * parseFloat(ui.position.left / parseFloat($(this).parent().width())) )
           }
         ));
       }
@@ -153,28 +157,27 @@ function deleteCardByIdAndClass(id, cardClass) {
   }
 }
 
-function coordsOfPlayedCard(ui, index) {
-  var coords = null;
-  var newCardLeft = ui.position.left + 602.617;
-  var newCardTop = ui.position.top + 512.1167;
-  if (index == 0) {
-    coords = {
-      x: newCardLeft,
-      y: newCardTop
+function sendCardValue(id, $playedCard, event, cardCords) {
+  stompClient.send("/app/playCard", {}, JSON.stringify(
+    {
+      'id': id,
+      'cardValue': $playedCard[0].outerHTML,
+      'parentId': event.target.id,
+      "coords": {
+        'x': cardCords.left,
+        'y': cardCords.top
+      }
     }
+  ));
+}
 
-  } else if (index == 1) {
-    coords = {
-      x: newCardLeft + 86.7666,
-      y: newCardTop
-    }
-  } else {
-    coords = {
-      x: newCardLeft + 173.533,
-      y: newCardTop
-    }
-  }
-  return coords;
+function startGame(){
+  $("#start").click(function() {
+    stompClient.send("/app/startGame", {}, JSON.stringify(
+      {}
+    ));
+    alert("game has started");
+  });
 }
 
 $(function () {
@@ -198,28 +201,17 @@ $(function () {
     drop: function (event, ui) {
       var id = ui.draggable.attr("id");
       var imgSource = ui.draggable[0].innerHTML;
-      var index = $("div .new-card").index($("#" + id));
-      console.log(ui.draggable);
+      var $cardCords = $("#" + id).position();
+      console.log($("#" + id).position());
       console.log(id);
-      console.log(event.target);
+      console.log(event.target.id);
 
       var $playedCard = createCardDiv(id, "new-card card own-hand played", $(imgSource).attr("src")).css({
         position: "absolute"
       });
-      console.log($("div .new-card").index($("#" + id)));
-      var cardCords = coordsOfPlayedCard(ui, index);
-      deleteCardByIdAndClass(id, "hidden");
+  
+      sendCardValue(id, $playedCard, event, $cardCords);
 
-      stompClient.send("/app/playCard", {}, JSON.stringify(
-        {
-          'id': id,
-          'cardValue': $playedCard[0].outerHTML,
-          "coords": {
-            'x': cardCords.x,
-            'y': cardCords.y
-          }
-        }
-      ));
     }
   });
 });
